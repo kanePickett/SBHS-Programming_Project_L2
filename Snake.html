@@ -2,27 +2,133 @@
 <html>
 <head>
     <title>THIS IS SNAKE!!!</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            border: 2px solid lightGreen;
+        }
+    </style>
 </head>
 
 <body>
-    <canvas id="gameCanvas" width="750" height="750"></canvas>
+
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+
     <script>
         var canvas, canvasContext;
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
             canvasContext = canvas.getContext('2d');
 
-            setInterval(mainLoop, 1000 / 50);
+            document.addEventListener('keydown', keyPressed); //keyPressed = made function 
+            //            document.addEventListener('keyup', keyReleased); //keyReleased = made function 
+
+            setInterval(mainLoop, 1000 / 15);
         }
+
+        // Input Keys
+        const W_KEY = 87;
+        const S_KEY = 83;
+        const A_KEY = 65;
+        const D_KEY = 68;
+
+        var gridSize = 20;
+        var tileCount = 30;
+
+        var snakeXpos = 0;
+        var snakeYpos = 0;
+        var snakeXspeed = 0;
+        var snakeYspeed = 0;
+        const SNAKE_SIZE = gridSize;
+        
+        var foodXpos = 0;
+        var foodYpos = 0;
+
+        var setUp = true;
 
         function mainLoop() {
             colorRect(0, 0, canvas.width, canvas.height, 'black') //BG
+
+            colorRect(snakeXpos * gridSize, snakeYpos * gridSize, SNAKE_SIZE, SNAKE_SIZE, 'limeGreen') //SNAKE
+            colorRect(foodXpos*gridSize, foodYpos*gridSize, gridSize, gridSize, 'yellow'); // food
+
+            if (setUp) {
+                settingUp();
+                setUp = false;
+            }
+
+            playerMove();
         }
 
-        function colorRect(x, y, w, h, color) {
+
+        function colorRect(x, y, w, h, color) { //BG Define
             canvasContext.fillStyle = color;
             canvasContext.fillRect(x, y, w, h);
+        }
 
+
+        function settingUp() {
+            foodSpawn()
+//            snakeXpos = canvas.width / 2 - SNAKE_SIZE / 2;
+//            snakeYpos = canvas.height / 2 - SNAKE_SIZE / 2;
+        }
+
+        function keyPressed(evt) {
+                                console.log(evt.keyCode) // in console with state the number associated with the key pressed 
+
+            switch (evt.keyCode) {
+                case A_KEY:
+                    snakeXspeed = -1;
+                    snakeYspeed = 0;
+                    break;
+            }
+            switch (evt.keyCode) {
+                case D_KEY:
+                    snakeXspeed = 1;
+                    snakeYspeed = 0;
+                    break;
+            }
+            switch (evt.keyCode) {
+                case W_KEY:
+                    snakeYspeed = -1;
+                    snakeXspeed = 0;
+                    break;
+            }
+            switch (evt.keyCode) {
+                case S_KEY:
+                    snakeYspeed = 1;
+                    snakeXspeed = 0;
+                    break;
+            }
+        }
+
+
+        function playerMove() {
+            snakeXpos += snakeXspeed;
+            snakeYpos += snakeYspeed;
+            
+            if(snakeXpos == foodXpos && snakeYpos == foodYpos){
+               foodSpawn();
+               }
+        }
+
+        function foodSpawn() {
+             foodXpos = Math.floor(Math.random()*tileCount); 
+             foodYpos = Math.floor(Math.random()*tileCount);
+            
+            console.log(foodXpos + ":" + foodYpos)
         }
     </script>
 
